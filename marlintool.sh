@@ -4,13 +4,18 @@
 # on github at https://github.com/mmone/marlintool
 
 # Marlin fork optimized for the AnetA8 Prusa clone
-marlinRepositoryUrl="https://github.com/SkyNet3D/Marlin"
+#marlinRepositoryUrl="https://github.com/SkyNet3D/Marlin"
+marlinRepositoryUrl="https://github.com/pandel/Marlin.git"
 
 # Original Marlin
 # marlinRepositoryUrl="https://github.com/MarlinFirmware/Marlin"
 
+# branch
+#marlinBranch="master"
+marlinBranch="AM6_config"
+
 # Anet board
-boardString="anet:avr:anetv1"
+boardString="anet:avr:anet"
 
 # Arduino Mega
 # boardString="arduino:avr:mega:cpu=atmega2560"
@@ -41,10 +46,10 @@ marlinDir="Marlin"
 # Build directory
 buildDir="./build"
 
-# The path to additional hardware defnitions for the arduino tool chain
-# eg. sanguino boards that live in "/arduino/hardware".
 # Set to an empty string if you dont need this.
-hardwareDefintionDirectory="./hardware/anet"
+hardwareDefinitionRepo="https://github.com/SkyNet3D/anet-board.git"
+hardwareDefinitionPath="anet-board/hardware/anet"
+hardwareDefinitionName="anet"
 
 scriptName=$0
 
@@ -92,6 +97,7 @@ getDependencies()
    git clone https://github.com/olikraus/U8glib_Arduino.git
    mv -f U8glib_Arduino "$arduinoDir"/libraries/U8glib_Arduino
    rm -rf U8glib_Arduino
+
 }
 
 ## Clone Marlin
@@ -99,7 +105,7 @@ getMarlin()
 {
    echo -e "\nCloning Marlin \"$marlinRepositoryUrl\"...\n"
 
-   git clone "$marlinRepositoryUrl" "$marlinDir" 
+   git clone -b "$marlinBranch" "$marlinRepositoryUrl" "$marlinDir" 
    exit
 }
 
@@ -141,10 +147,13 @@ setupEnvironment()
 ## Install board definition
 installHardwareDefinition()
 {
-   if [ "$hardwareDefintionDirectory" != "" ]; then
+   if [ "$hardwareDefinitionRepo" != "" ]; then
    echo -e "\nInstalling board hardware definition ... \n"
 
-   cp -R "$hardwareDefintionDirectory" "$arduinoDir"/hardware/
+   git clone "$hardwareDefinitionRepo"
+   rm -rf "$arduinoDir"/hardware/"$hardwareDefinitionName"
+   mv -f "$hardwareDefinitionPath" "$arduinoDir"/hardware/"$hardwareDefinitionName"
+   rm -rf $(basename "$hardwareDefinitionRepo" ".${hardwareDefinitionRepo##*.}")
    fi
 }
 
