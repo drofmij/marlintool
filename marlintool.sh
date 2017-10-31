@@ -5,20 +5,20 @@
 
 # Marlin fork optimized for the AnetA8 Prusa clone
 #marlinRepositoryUrl="https://github.com/SkyNet3D/Marlin"
-marlinRepositoryUrl="https://github.com/pandel/Marlin.git"
+#marlinRepositoryUrl="https://github.com/pandel/Marlin.git"
 
 # Original Marlin
-# marlinRepositoryUrl="https://github.com/MarlinFirmware/Marlin"
+ marlinRepositoryUrl="https://github.com/MarlinFirmware/Marlin"
 
 # branch
 #marlinBranch="master"
-marlinBranch="AM6_config"
+marlinBranch="1.1.x"
 
 # Anet board
 boardString="anet:avr:anet"
 
 # Arduino Mega
-# boardString="arduino:avr:mega:cpu=atmega2560"
+#boardString="arduino:avr:mega:cpu=atmega2560"
 
 arduinoToolchainVersion="1.8.5"
 
@@ -72,7 +72,7 @@ getArduinoToolchain()
 {
    echo -e "\nDownloading Arduino environment ...\n"
    wget http://downloads-02.arduino.cc/arduino-"$arduinoToolchainVersion"-"$arduinoToolchainArchitecture".tar.xz
-   mkdir "$arduinoDir"
+   mkdir -p "$arduinoDir"
    echo -e "\nUnpacking Arduino environment. This might take a while ... "
    tar -xf arduino-"$arduinoToolchainVersion"-"$arduinoToolchainArchitecture".tar.xz -C "$arduinoDir" --strip 1
    rm -R arduino-"$arduinoToolchainVersion"-"$arduinoToolchainArchitecture".tar.xz
