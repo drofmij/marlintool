@@ -20,7 +20,7 @@ boardString="anet:avr:anet"
 # Arduino Mega
 # boardString="arduino:avr:mega:cpu=atmega2560"
 
-arduinoToolchainVersion="1.8.2"
+arduinoToolchainVersion="1.8.5"
 
 # Toolchain architecture
 arch=$(uname -m)
