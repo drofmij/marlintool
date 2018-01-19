@@ -4,18 +4,18 @@
 # on github at https://github.com/mmone/marlintool
 
 # Marlin fork optimized for the AnetA8 Prusa clone
-marlinRepositoryUrl="https://github.com/SkyNet3D/Marlin"
+#marlinRepositoryUrl="https://github.com/SkyNet3D/Marlin"
 
 # Original Marlin
-# marlinRepositoryUrl="https://github.com/MarlinFirmware/Marlin"
+marlinRepositoryUrl="https://github.com/MarlinFirmware/Marlin"
 
 # Anet board
-boardString="anet:avr:anetv1"
+#boardString="anet:avr:anetv1"
 
 # Arduino Mega
-# boardString="arduino:avr:mega:cpu=atmega2560"
+boardString="arduino:avr:mega:cpu=atmega2560"
 
-arduinoToolchainVersion="1.8.2"
+arduinoToolchainVersion="1.8.4"
 
 # Toolchain architecture
 arch=$(uname -m)
@@ -44,7 +44,7 @@ buildDir="./build"
 # The path to additional hardware defnitions for the arduino tool chain
 # eg. sanguino boards that live in "/arduino/hardware".
 # Set to an empty string if you dont need this.
-hardwareDefintionDirectory="./hardware/anet"
+#hardwareDefintionDirectory="./hardware/anet"
 
 scriptName=$0
 
@@ -153,12 +153,13 @@ installHardwareDefinition()
 backupMarlinConfiguration()
 {
    echo -e "\nSaving Marlin configuration\n"
+   echo -e "  \"_Bootscreen.h\""
    echo -e "  \"Configuration.h\""
    echo -e "  \"Configuration_adv.h\""
    echo -e "\nto \"./configuration/$1/\"\n"
 
    mkdir -p configuration/$1
-
+   cp "$marlinDir"/Marlin/_Bootscreen.h* configuration/"$1"
    cp "$marlinDir"/Marlin/Configuration.h configuration/"$1"
    cp "$marlinDir"/Marlin/Configuration_adv.h configuration/"$1"
 }
@@ -172,7 +173,7 @@ restoreMarlinConfiguration()
       echo -e "  \"Configuration.h\""
       echo -e "  \"Configuration_adv.h\""
       echo -e "\nfrom \"./configuration/$1/\"\n"
-
+      cp configuration/"$1"/_Bootscreen.h* "$marlinDir"/Marlin/
       cp configuration/"$1"/Configuration.h "$marlinDir"/Marlin/
       cp configuration/"$1"/Configuration_adv.h "$marlinDir"/Marlin/
    else
