@@ -7,7 +7,7 @@
 #marlinRepositoryUrl="https://github.com/SkyNet3D/Marlin"
 
 # Original Marlin
-marlinRepositoryUrl="https://github.com/MarlinFirmware/Marlin"
+marlinRepositoryUrl="https://github.com/drofmij/Marlin.git"
 
 # Anet board
 #boardString="anet:avr:anetv1"
@@ -15,19 +15,24 @@ marlinRepositoryUrl="https://github.com/MarlinFirmware/Marlin"
 # Arduino Mega
 boardString="arduino:avr:mega:cpu=atmega2560"
 
-arduinoToolchainVersion="1.8.4"
+arduinoToolchainVersion="1.8.13"
 
 # Toolchain architecture
-arch=$(uname -m)
-case $arch in
-  arm*) arduinoToolchainArchitecture="linuxarm" ;;
-  i386|i486|i586|i686) arduinoToolchainArchitecture="linux32" ;;
-  x86_64) arduinoToolchainArchitecture="linux64" ;;
-  *)
-    >&2 echo "Unsuppored platform architecture: $arch"
-    exit 1
-    ;;
-esac
+if [[ $(uname) =~ "MINGW64" ]]
+then
+  arduinoToolchainArchitecture="windows"
+else
+  arch=$(uname -m)
+  case $arch in
+    arm*) arduinoToolchainArchitecture="linuxarm" ;;
+    i386|i486|i586|i686) arduinoToolchainArchitecture="linux32" ;;
+    x86_64) arduinoToolchainArchitecture="linux64" ;;
+    *)
+      >&2 echo "Unsuppored platform architecture: $arch"
+      exit 1
+      ;;
+  esac
+fi
 
 # Serialport for uploading
 port="/dev/ttyUSB0"
@@ -65,12 +70,24 @@ checkTools()
 ## Download the toolchain and unpack it
 getArduinoToolchain()
 {
-   echo -e "\nDownloading Arduino environment ...\n"
-   wget http://downloads-02.arduino.cc/arduino-"$arduinoToolchainVersion"-"$arduinoToolchainArchitecture".tar.xz
-   mkdir "$arduinoDir"
-   echo -e "\nUnpacking Arduino environment. This might take a while ... "
-   tar -xf arduino-"$arduinoToolchainVersion"-"$arduinoToolchainArchitecture".tar.xz -C "$arduinoDir" --strip 1
-   rm -R arduino-"$arduinoToolchainVersion"-"$arduinoToolchainArchitecture".tar.xz
+  EXT=tar.xz
+  if [ $arduinoToolchainArchitecture == "windows" ]
+  then
+    EXT=zip
+  fi
+  archiveFile=arduino-"$arduinoToolchainVersion"-"$arduinoToolchainArchitecture".$EXT
+  echo -e "\nDownloading Arduino environment ...\n"
+  wget https://downloads.arduino.cc/$archiveFile
+  echo -e "\nUnpacking Arduino environment. This might take a while ... "
+  if [ $arduinoToolchainArchitecture == "windows" ]
+  then
+    unzip $archiveFile
+    mv -f ./arduino-"$arduinoToolchainVersion" "$arduinoDir"
+  else
+    mkdir "$arduinoDir"
+    tar -xf $archiveFile -C "$arduinoDir" --strip 1
+  fi
+  rm -R $archiveFile
 }
 
 
